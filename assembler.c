@@ -9,6 +9,7 @@
 
 char* source_path;
 char* object_path;
+char* intermediate_path = "./interi.txt";
 
 char line_to_parse[LINE_MAX_LEN];
 
@@ -17,9 +18,12 @@ char operator[OPERATOR_MAX_LEN];
 char operand[OPERAND_MAX_LEN];
 
 int line_idx = 0;
+int location_counter = 0;
+int starting_address = 0;
 
 FILE* input_file;
 FILE* output_file;
+FILE* intermediate_file;
 
 void read_token(char* line_to_parse, char* place_to_store){
 	int token_idx = 0;
@@ -48,15 +52,27 @@ void parse_line(char* line_to_parse, char* label, char* operator, char* operand)
 }
 
 void do_path1(){
-	while(fgets(line_to_parse,LINE_MAX_LEN,input_file)){
+	intermediate_file = fopen(intermediate_path,"w");
+	
+	/* read first line */
+	fgets(line_to_parse,LINE_MAX_LEN,input_file);
+	if(strcpy(operator,"START")==0){
+		int opd = (int)strtol(operand, NULL, 10);
+		starting_address = opd;
+		location_counter = starting_address;
+		fprintf(intermediate_file, "%-32s, %-32d\n", operator, opd);
+		fgets(line_to_parse,LINE_MAX_LEN,input_file);
+	}else{
+		location_counter = 0;
+	}
+	while(strcmp(operator, "END") != 0){
 		if(line_to_parse[0] == '.')
 			continue;
+		if( strlen(label) != 0 ){
+			// searching symbol tab for label
+		}
 
-		parse_line(line_to_parse,label,operator,operand);
-		if(strlen(label) + strlen(operator) + strlen(operand) == 0)
-			continue;
-
-		printf("%s %s %s\n",label, operator, operand);
+		//search optab
 	}
 }
 
